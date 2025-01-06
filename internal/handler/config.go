@@ -26,7 +26,7 @@ func (h *Config) Get(c echo.Context) error {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 
-		mergeMaps(config, engineConfig)
+		return c.JSON(http.StatusOK, mergeMaps(config, engineConfig))
 	}
 
 	return c.JSON(http.StatusOK, config)
@@ -35,12 +35,16 @@ func (h *Config) Get(c echo.Context) error {
 func mergeMaps(cfg, engineCfg map[string]interface{}) map[string]interface{} {
 	merged := make(map[string]interface{})
 
-	for k, v := range engineCfg {
-		merged[k] = v
+	if engineCfg != nil {
+		for k, v := range engineCfg {
+			merged[k] = v
+		}
 	}
 
-	for k, v := range cfg {
-		merged[k] = v
+	if cfg != nil {
+		for k, v := range cfg {
+			merged[k] = v
+		}
 	}
 
 	return merged

@@ -36,6 +36,9 @@ func main(cfg config.Config) {
 	app.GET("/healthz", func(c echo.Context) error { return c.NoContent(http.StatusNoContent) })
 
 	api := app.Group("/api")
+	api.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Enter path in order to retrieve config")
+	})
 	api.GET("/:endpoint", configHandler.Get)
 
 	if err := app.Start(fmt.Sprintf(":%d", cfg.API.Port)); !errors.Is(err, http.ErrServerClosed) {

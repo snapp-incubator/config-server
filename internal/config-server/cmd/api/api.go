@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/labstack/gommon/log"
+	"github.com/sirupsen/logrus"
 	"gitlab.snapp.ir/snappcloud/config-server/internal/engine"
 	"gitlab.snapp.ir/snappcloud/config-server/internal/handler"
 	"net/http"
@@ -15,7 +16,6 @@ import (
 	"gitlab.snapp.ir/snappcloud/config-server/internal/config"
 
 	"github.com/labstack/echo/v4"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -33,16 +33,16 @@ func main(cfg config.Config) {
 
 	app := echo.New()
 
+	app.GET("/healthz", func(c echo.Context) error { return c.NoContent(http.StatusNoContent) })
+
+	api := app.Group("/api")
+	api.GET("/:endpoint", configHandler.Get)
+
 	if err := app.Start(fmt.Sprintf(":%d", cfg.API.Port)); !errors.Is(err, http.ErrServerClosed) {
 		logrus.Fatalf("echo initiation failed: %s", err)
 	}
 
 	logrus.Println("API has been started :D")
-
-	app.GET("/healthz", func(c echo.Context) error { return c.NoContent(http.StatusNoContent) })
-
-	api := app.Group("/api")
-	api.GET("/:endpoint", configHandler.Get)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

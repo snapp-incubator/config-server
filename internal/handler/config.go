@@ -35,16 +35,12 @@ func (h *Config) Get(c echo.Context) error {
 func mergeMaps(cfg, engineCfg map[string]interface{}) map[string]interface{} {
 	merged := make(map[string]interface{})
 
-	if engineCfg != nil {
-		for k, v := range engineCfg {
-			merged[k] = v
-		}
+	for k, v := range engineCfg {
+		merged[k] = v
 	}
 
-	if cfg != nil {
-		for k, v := range cfg {
-			merged[k] = v
-		}
+	for k, v := range cfg {
+		merged[k] = v
 	}
 
 	return merged

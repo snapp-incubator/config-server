@@ -1,6 +1,4 @@
-FROM golang:latest AS build
-
-LABEL maintainer="Saman Hoseini <saman2000hoseini@gmail.com>"
+FROM golang:1.23 AS build
 
 WORKDIR /app
 
@@ -23,6 +21,6 @@ WORKDIR /app/
 
 COPY --from=build /config-server .
 
-EXPOSE 65432
+EXPOSE 8080
 
 CMD ["./config-server", "api"]

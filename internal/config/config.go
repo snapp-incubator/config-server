@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"strings"
+	"time"
 
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/yaml"
@@ -24,7 +25,8 @@ type (
 	}
 
 	API struct {
-		Port int `koanf:"port"`
+		Port            int           `koanf:"port"`
+		GracefulTimeout time.Duration `koanf:"graceful_timeout"`
 	}
 )
 

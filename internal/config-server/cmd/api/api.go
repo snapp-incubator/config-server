@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/labstack/gommon/log"
@@ -49,7 +50,19 @@ func main(cfg config.Config) {
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
+
+	s := <-quit
+
+	logrus.Infof("signal %s received", s)
+
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.API.GracefulTimeout)
+	defer cancel()
+
+	app.Server.SetKeepAlivesEnabled(false)
+
+	if err := app.Shutdown(ctx); err != nil {
+		logrus.Errorf("failed to shutdown simorgh server: %s", err.Error())
+	}
 }
 
 // Register API command.

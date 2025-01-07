@@ -61,7 +61,7 @@ func main(cfg config.Config) {
 	app.Server.SetKeepAlivesEnabled(false)
 
 	if err := app.Shutdown(ctx); err != nil {
-		logrus.Errorf("failed to shutdown simorgh server: %s", err.Error())
+		logrus.Errorf("failed to shutdown config-server: %s", err.Error())
 	}
 }
 

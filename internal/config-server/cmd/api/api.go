@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/sirupsen/logrus"
 	"gitlab.snapp.ir/snappcloud/config-server/internal/engine"
@@ -33,6 +34,10 @@ func main(cfg config.Config) {
 	configHandler := handler.NewConfigHandler(*configEngine, cfg.AppConfigs)
 
 	app := echo.New()
+	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	app.GET("/healthz", func(c echo.Context) error { return c.NoContent(http.StatusNoContent) })
 

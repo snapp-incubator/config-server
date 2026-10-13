@@ -1,4 +1,4 @@
-FROM golang:1.23 AS build
+FROM golang:1.27.2 AS build
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ WORKDIR /app/cmd
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /config-server .
 
 #Second stage of build
-FROM alpine:latest
+FROM alpine:3.24
 
 RUN apk --no-cache add ca-certificates
 
